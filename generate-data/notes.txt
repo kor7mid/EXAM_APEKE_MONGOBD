@@ -1,0 +1,9 @@
+source ./venv/bin/activate
+
+pip install pymongo
+pip install faker
+
+DATABASE_URL='mongodb://localhost:27017'
+python3 data.py
+===========================================
+pip freeze > requirements.txt
