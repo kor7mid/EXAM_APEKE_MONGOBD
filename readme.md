@@ -14,7 +14,7 @@ Avant de lancer l'application, assurez-vous d'avoir installé Python (version 3.
 
 1. Clonez ce dépôt sur votre machine :
    ```
-   git clone https://github.com/votre_nom/university-management.git
+   git clone https://github.com/kor7mid/EXAM_APEKE_MONGOBD.git
    ```
 2. Installez les dépendances en exécutant la commande suivante dans le répertoire du projet :
    ```
