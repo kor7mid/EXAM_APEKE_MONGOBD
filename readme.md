@@ -1,4 +1,3 @@
-
 # Gestion des données d'une université
 
 Ce projet consiste en un outil de gestion des données pour une université, développé en Python avec une base de données MongoDB. Il offre des fonctionnalités pour gérer les étudiants, les enseignants, les unités d'enseignement (UE), les cours et le personnel administratif.
@@ -25,6 +24,7 @@ Assurez-vous que MongoDB est en cours d'exécution sur votre système. Par défa
 ## Utilisation
 
 Pour lancer l'application, exécutez le fichier `university_cli.py` :
+Pour une premiere utilisation le menu 6 permet de generer des donnees tests
 
 ```
 python university_cli.py
