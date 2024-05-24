@@ -135,6 +135,7 @@ def update_student():
         print(f"Étudiant avec l'ID {student_id} introuvable!")
 
 def list_students():
+    count = 0
     for student in students_collection.find():
         print(f"ID: {student['_id']}")
         print(f"Nom: {student['name']}")
@@ -145,6 +146,40 @@ def list_students():
         print(f"Adresse: {student['address']}")
         print(f"Département ID: {student['department_id']}")
         print("----")
+        count += 1
+        print(f"Total des étudiants: {count}")
+
+def list_students_by_department():
+    department_id = input("ID du département: ")
+    for student in students_collection.find({"department_id": ObjectId(department_id)}):
+        print(f"ID: {student['_id']}")
+        print(f"Nom: {student['name']}")
+        print(f"Âge: {student['age']}")
+        print(f"Genre: {student['gender']}")
+        print(f"Email: {student['email']}")
+        print(f"Téléphone: {student['phone']}")
+        print(f"Adresse: {student['address']}")
+        print(f"Département ID: {student['department_id']}")
+        print("----")
+        count += 1
+        print(f"Total des étudiants du departement: {count}")
+
+def list_students_by_faculty():
+    count = 0
+    faculty_id = input("ID de la faculté: ")
+    department_ids = [department['_id'] for department in departments_collection.find({"faculty_id": ObjectId(faculty_id)})]
+    for student in students_collection.find({"department_id": {"$in": department_ids}}):
+        print(f"ID: {student['_id']}")
+        print(f"Nom: {student['name']}")
+        print(f"Âge: {student['age']}")
+        print(f"Genre: {student['gender']}")
+        print(f"Email: {student['email']}")
+        print(f"Téléphone: {student['phone']}")
+        print(f"Adresse: {student['address']}")
+        print(f"Département ID: {student['department_id']}")
+        print("----")
+        count += 1
+        print(f"Total des étudiants de cette faculte: {count}")
 
 def get_students_per_course():
     pipeline = [
@@ -211,6 +246,7 @@ def update_teacher():
         print(f"Enseignant avec l'ID {teacher_id} introuvable!")
 
 def list_teachers():
+    count = 0
     for teacher in teachers_collection.find():
         print(f"ID: {teacher['_id']}")
         print(f"Nom: {teacher['name']}")
@@ -221,52 +257,326 @@ def list_teachers():
         print(f"Département ID: {teacher['department_id']}")
         print(f"Sujet: {teacher['subject']}")
         print("----")
+        count += 1
+        print(f"Total des enseignants: {count}")
 
-def main_menu():
-    print("\nGestion des données d'une université")
-    print("1. Ajouter un étudiant")
-    print("2. Supprimer un étudiant")
-    print("3. Modifier un étudiant")
-    print("4. Afficher tous les étudiants")
-    print("5. Nombre d'étudiants par UE")
-    print("6. Ajouter un enseignant")
-    print("7. Supprimer un enseignant")
-    print("8. Modifier un enseignant")
-    print("10. Generer des donnees pour l'université")
-    print("11. Quitter")
+def list_teachers_by_department():
+    count = 0
+    department_id = input("ID du département: ")
+    for teacher in teachers_collection.find({"department_id": ObjectId(department_id)}):
+        print(f"ID: {teacher['_id']}")
+        print(f"Nom: {teacher['name']}")
+        print(f"Âge: {teacher['age']}")
+        print(f"Email: {teacher['email']}")
+        print(f"Téléphone: {teacher['phone']}")
+        print(f"Adresse: {teacher['address']}")
+        print(f"Département ID: {teacher['department_id']}")
+        print(f"Sujet: {teacher['subject']}")
+        print("----")
+        count += 1
+        print(f"Total des enseignats du departement: {count}")
 
-    choix = input("Entrez votre choix: ")
+def list_teachers_by_faculty():
+    count = 0
+    faculty_id = input("ID de la faculté: ")
+    department_ids = [department['_id'] for department in departments_collection.find({"faculty_id": ObjectId(faculty_id)})]
+    for teacher in teachers_collection.find({"department_id": {"$in": department_ids}}):
+        print(f"ID: {teacher['_id']}")
+        print(f"Nom: {teacher['name']}")
+        print(f"Âge: {teacher['age']}")
+        print(f"Email: {teacher['email']}")
+        print(f"Téléphone: {teacher['phone']}")
+        print(f"Adresse: {teacher['address']}")
+        print(f"Département ID: {teacher['department_id']}")
+        print(f"Sujet: {teacher['subject']}")
+        print("----")
+        count += 1
+        print(f"Total des enseignants de cette faculte: {count}")
 
-    if choix == '1':
-        add_student()
-    elif choix == '2':
-        remove_student()
-    elif choix == '3':
-        update_student()
-    elif choix == '4':
-        list_students()
-    elif choix == '5':
-        get_students_per_course()
-    elif choix == '6':
-        add_teacher()
-    elif choix == '7':
-        remove_teacher()
-    elif choix == '8':
-        update_teacher()
-    elif choix == '9':
-        list_teachers()
-    elif choix == '10':
-        generate_data
-    elif choix == '11':
-        print("Au revoir!")
-        return False
+def add_course():
+    name = input("Nom de l'unité d'enseignement: ")
+    faculty_id = input("ID de la faculté: ")
+    teacher_id = input("ID de l'enseignant: ")
+    semester = int(input("Semestre: "))
+    year = int(input("Année: "))
+
+    course = {
+        "name": name,
+        "faculty_id": ObjectId(faculty_id),
+        "teacher_id": ObjectId(teacher_id),
+        "semester": semester,
+        "year": year
+    }
+
+    courses_collection.insert_one(course)
+    print(f"Unité d'enseignement {name} ajoutée avec succès!")
+
+def remove_course():
+    course_id = input("ID de l'unité d'enseignement à supprimer: ")
+    courses_collection.delete_one({"_id": ObjectId(course_id)})
+    print(f"Unité d'enseignement avec l'ID {course_id} supprimée!")
+
+def update_course():
+    course_id = input("ID de l'unité d'enseignement à modifier: ")
+    course = courses_collection.find_one({"_id": ObjectId(course_id)})
+
+    if course:
+        name = input(f"Nom actuel: {course['name']}. Nouveau nom ? (Appuyez sur Entrée pour conserver): ") or course['name']
+        faculty_id = input(f"ID de la faculté actuelle: {course['faculty_id']}. Nouveau ID de la faculté ? (Appuyez sur Entrée pour conserver): ") or course['faculty_id']
+        teacher_id = input(f"ID de l'enseignant actuel: {course['teacher_id']}. Nouveau ID de l'enseignant ? (Appuyez sur Entrée pour conserver): ") or course['teacher_id']
+        semester = input(f"Semestre actuel: {course['semester']}. Nouveau semestre ? (Appuyez sur Entrée pour conserver): ") or course['semester']
+        year = input(f"Année actuelle: {course['year']}. Nouvelle année ? (Appuyez sur Entrée pour conserver): ") or course['year']
+
+        course_modifie = {
+            "name": name,
+            "faculty_id": ObjectId(faculty_id),
+            "teacher_id": ObjectId(teacher_id),
+            "semester": int(semester),
+            "year": int(year)
+        }
+        courses_collection.update_one({"_id": ObjectId(course_id)}, {"$set": course_modifie})
+        print(f"Unité d'enseignement avec l'ID {course_id} modifiée avec succès!")
     else:
-        print("Choix invalide. Veuillez réessayer.")
-    
-    return True
+        print(f"Unité d'enseignement avec l'ID {course_id} introuvable!")
+
+def list_courses():
+    count = 0
+    for course in courses_collection.find():
+        print(f"ID: {course['_id']}")
+        print(f"Nom: {course['name']}")
+        print(f"ID de la faculté: {course['faculty_id']}")
+        print(f"ID de l'enseignant: {course['teacher_id']}")
+        print(f"Semestre: {course['semester']}")
+        print(f"Année: {course['year']}")
+        print("----")
+        count += 1
+        print(f"Total des cours: {count}")
+
+def list_courses_by_department():
+    count = 0
+    department_id = input("ID du département: ")
+    teacher_ids = [teacher['_id'] for teacher in teachers_collection.find({"department_id": ObjectId(department_id)})]
+    for course in courses_collection.find({"teacher_id": {"$in": teacher_ids}}):
+        print(f"ID: {course['_id']}")
+        print(f"Nom: {course['name']}")
+        print(f"ID de la faculté: {course['faculty_id']}")
+        print(f"ID de l'enseignant: {course['teacher_id']}")
+        print(f"Semestre: {course['semester']}")
+        print(f"Année: {course['year']}")
+        print("----")
+        count += 1
+        print(f"Total des cours de ce departement: {count}")
+
+def list_courses_by_faculty():
+    count = 0
+    faculty_id = input("ID de la faculté: ")
+    for course in courses_collection.find({"faculty_id": ObjectId(faculty_id)}):
+        print(f"ID: {course['_id']}")
+        print(f"Nom: {course['name']}")
+        print(f"ID de la faculté: {course['faculty_id']}")
+        print(f"ID de l'enseignant: {course['teacher_id']}")
+        print(f"Semestre: {course['semester']}")
+        print(f"Année: {course['year']}")
+        print("----")
+        count += 1
+        print(f"Total des cours de cette faculte: {count}")
+
+def add_admin_staff():
+    name = input("Nom du membre du personnel administratif: ")
+    role = input("Rôle du membre du personnel administratif: ")
+    department = input("Département du membre du personnel administratif: ")
+
+    admin_staff = {
+        "name": name,
+        "role": role,
+        "department": department
+    }
+
+    admin_staff_collection.insert_one(admin_staff)
+    print(f"Membre du personnel administratif {name} ajouté avec succès!")
+
+def remove_admin_staff():
+    admin_staff_id = input("ID du membre du personnel administratif à supprimer: ")
+    admin_staff_collection.delete_one({"_id": ObjectId(admin_staff_id)})
+    print(f"Membre du personnel administratif avec l'ID {admin_staff_id} supprimé!")
+
+def update_admin_staff():
+    admin_staff_id = input("ID du membre du personnel administratif à modifier: ")
+    admin_staff = admin_staff_collection.find_one({"_id": ObjectId(admin_staff_id)})
+
+    if admin_staff:
+        name = input(f"Nom actuel: {admin_staff['name']}. Nouveau nom ? (Appuyez sur Entrée pour conserver): ") or admin_staff['name']
+        role = input(f"Rôle actuel: {admin_staff['role']}. Nouveau rôle ? (Appuyez sur Entrée pour conserver): ") or admin_staff['role']
+        department = input(f"Département actuel: {admin_staff['department']}. Nouveau département ? (Appuyez sur Entrée pour conserver): ") or admin_staff['department']
+
+        admin_staff_modifie = {
+            "name": name,
+            "role": role,
+            "department": department
+        }
+        admin_staff_collection.update_one({"_id": ObjectId(admin_staff_id)}, {"$set": admin_staff_modifie})
+        print(f"Membre du personnel administratif avec l'ID {admin_staff_id} modifié avec succès!")
+    else:
+        print(f"Membre du personnel administratif avec l'ID {admin_staff_id} introuvable!")
+
+def list_admin_staff():
+    count = 0
+    for admin_staff in admin_staff_collection.find():
+        print(f"ID: {admin_staff['_id']}")
+        print(f"Nom: {admin_staff['name']}")
+        print(f"Rôle: {admin_staff['role']}")
+        print(f"Département: {admin_staff['department']}")
+        print("----")
+        count += 1
+        print(f"Total des administrateurs: {count}")
+
+# Fonction pour quitter le programme
+def quitter():
+    print("Au revoir!")
+    exit()
 
 if __name__ == "__main__":
-    generate_data()
     while True:
-        if not main_menu():
+        print("\nMenu principal:")
+        print("1. Gestion des étudiants")
+        print("2. Gestion des enseignants")
+        print("3. Gestion des unités d'enseignement (UE)")
+        print("4. Gestion des cours")
+        print("5. Gestion du personnel administratif")
+        print("6. Quitter")
+
+        choix = input("Veuillez saisir votre choix (1-6): ")
+
+        if choix == "1":
+            while True:
+                print("\nGestion des étudiants:")
+                print("1. Ajouter un étudiant")
+                print("2. Supprimer un étudiant")
+                print("3. Modifier un étudiant")
+                print("4. Afficher la liste des étudiants")
+                print("5. Afficher la liste des étudiants par département")
+                print("6. Afficher la liste des étudiants par faculté")
+                print("7. Nombre d'étudiants par UE")
+                print("8. Revenir au menu principal")
+                sous_choix = input("Veuillez saisir votre choix (1-8): ")
+                if sous_choix == "1":
+                    add_student()
+                elif sous_choix == "2":
+                    remove_student()
+                elif sous_choix == "3":
+                    update_student()
+                elif sous_choix == "4":
+                    list_students()
+                elif sous_choix == "5":
+                    list_students_by_department()
+                elif sous_choix == "6":
+                    list_students_by_faculty()
+                elif sous_choix == "7":
+                    get_students_per_course()
+                elif sous_choix == "8":
+                    break
+                else:
+                    print("Choix invalide!")
+        elif choix == "2":
+            while True:
+                print("\nGestion des enseignants:")
+                print("1. Ajouter un enseignant")
+                print("2. Supprimer un enseignant")
+                print("3. Modifier un enseignant")
+                print("4. Afficher la liste des enseignants")
+                print("5. Afficher la liste des enseignants par département")
+                print("6. Afficher la liste des enseignants par faculté")
+                print("7. Revenir au menu principal")
+                sous_choix = input("Veuillez saisir votre choix (1-7): ")
+                if sous_choix == "1":
+                    add_teacher()
+                elif sous_choix == "2":
+                    remove_teacher()
+                elif sous_choix == "3":
+                    update_teacher()
+                elif sous_choix == "4":
+                    list_teachers()
+                elif sous_choix == "5":
+                    list_teachers_by_department()
+                elif sous_choix == "6":
+                    list_teachers_by_faculty()
+                elif sous_choix == "7":
+                    break
+                else:
+                    print("Choix invalide!")
+        elif choix == "3":
+            while True:
+                print("\nGestion des unités d'enseignement (UE):")
+                print("1. Ajouter une UE")
+                print("2. Supprimer une UE")
+                print("3. Modifier une UE")
+                print("4. Afficher la liste des UE")
+                print("5. Afficher la liste des UE par département")
+                print("6. Afficher la liste des UE par faculté")
+                print("7. Revenir au menu principal")
+                sous_choix = input("Veuillez saisir votre choix (1-7): ")
+                if sous_choix == "1":
+                    add_course()
+                elif sous_choix == "2":
+                    remove_course()
+                elif sous_choix == "3":
+                    update_course()
+                elif sous_choix == "4":
+                    list_courses()
+                elif sous_choix == "5":
+                    list_courses_by_department()
+                elif sous_choix == "6":
+                    list_courses_by_faculty()
+                elif sous_choix == "7":
+                    break
+                else:
+                    print("Choix invalide!")
+        elif choix == "4":
+            while True:
+                print("\nGestion des cours:")
+                print("1. Afficher la liste des cours")
+                print("2. Afficher la liste des cours par département")
+                print("3. Afficher la liste des cours par faculté")
+                print("4. Revenir au menu principal")
+                sous_choix = input("Veuillez saisir votre choix (1-4): ")
+                if sous_choix == "1":
+                    list_courses()
+                elif sous_choix == "2":
+                    list_courses_by_department()
+                elif sous_choix == "3":
+                    list_courses_by_faculty()
+                elif sous_choix == "4":
+                    break
+                else:
+                    print("Choix invalide!")
+        elif choix == "5":
+            while True:
+                print("\nGestion du personnel administratif:")
+                print("1. Ajouter un membre du personnel administratif")
+                print("2. Supprimer un membre du personnel administratif")
+                print("3. Modifier un membre du personnel administratif")
+                print("4. Afficher la liste des membres du personnel administratif")
+                print("5. Revenir au menu principal")
+                sous_choix = input("Veuillez saisir votre choix (1-5): ")
+                if sous_choix == "1":
+                    add_admin_staff()
+                elif sous_choix == "2":
+                    remove_admin_staff()
+                elif sous_choix == "3":
+                    update_admin_staff()
+                elif sous_choix == "4":
+                    list_admin_staff()
+                elif sous_choix == "5":
+                    break
+                else:
+                    print("Choix invalide!")
+        elif choix == "6":
+            quitter()
+        else:
+            print("Choix invalide!")
             break
+else:
+     print("Choix invalide!")
+
+
+
