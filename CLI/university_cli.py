@@ -443,7 +443,8 @@ if __name__ == "__main__":
         print("3. Gestion des unités d'enseignement (UE)")
         print("4. Gestion des cours")
         print("5. Gestion du personnel administratif")
-        print("6. Quitter")
+        print("6. Generation des donnees tests")
+        print("7. Quitter")
 
         choix = input("Veuillez saisir votre choix (1-6): ")
 
@@ -571,6 +572,8 @@ if __name__ == "__main__":
                 else:
                     print("Choix invalide!")
         elif choix == "6":
+            generate_data()
+        elif choix == "7":
             quitter()
         else:
             print("Choix invalide!")
