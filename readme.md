@@ -23,8 +23,9 @@ Assurez-vous que MongoDB est en cours d'exécution sur votre système. Par défa
 
 ## Utilisation
 
+Pour une premiere utilisation le menu 6 permet de generer des donnees tests  
 Pour lancer l'application, exécutez le fichier `university_cli.py` :
-Pour une premiere utilisation le menu 6 permet de generer des donnees tests
+
 
 ```
 python university_cli.py
