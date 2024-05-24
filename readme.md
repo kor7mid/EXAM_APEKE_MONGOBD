@@ -1,6 +1,3 @@
-Bien sûr ! Voici un exemple de README que vous pouvez utiliser pour votre projet :
-
----
 
 # Gestion des données d'une université
 
